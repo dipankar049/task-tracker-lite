@@ -61,33 +61,20 @@ const Signup = () => {
     if (!validateForm()) return;
 
     setLoading(true);
-    setError(''); // Clear previous error message
-
-    let timeoutReached = false;
-
-    // Start a timeout that will show the message after 5 seconds if not completed
-    const timeoutId = setTimeout(() => {
-      timeoutReached = true;
-      toast.info('Server is waking up. Please wait up to 1 minute...', { autoClose: 5000 });
-    }, 8000);
+    setError('');
+    toast.info('Server is waking up. Please wait up to 1 minute...', { autoClose: 8000 });
 
     try {
       const res = await axios.post(`${apiUrl}/api/auth/signup`, form);
-      if (timeoutReached) {
-        clearTimeout(timeoutId); // Clear timeout if request is completed before 5 seconds
-      }
       localStorage.setItem('token', res.data.token);
       toast.success("Signup successful!");
       navigate('/dashboard');
     } catch (err) {
-      if (timeoutReached) {
-        clearTimeout(timeoutId); // Clear timeout if request is completed before 5 seconds
-      }
       toast.error(err.response?.data?.message || 'Signup failed');
     } finally {
-      setLoading(false); // End loading state
+      setLoading(false);
     }
-};
+  };
 
 
   return (

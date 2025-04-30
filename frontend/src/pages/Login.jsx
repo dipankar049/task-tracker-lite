@@ -25,13 +25,8 @@ const Login = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    let timeoutReached = false;
 
-    // Set a timeout to show a message if the server takes too long (8 seconds in this case)
-    const timeoutId = setTimeout(() => {
-      timeoutReached = true;
-      toast.info('Server is waking up. Please wait up to 1 minute...', { autoClose: 5000 });
-    }, 8000);  // Change timeout to 8000ms (8 seconds)
+    toast.info('Server is waking up. Please wait up to 1 minute...', { autoClose: 8000 });
 
     try {
       const res = await axios.post(`${apiUrl}/api/auth/login`, {
@@ -39,20 +34,12 @@ const Login = () => {
         rememberMe,
       });
 
-      if (timeoutReached) {
-        clearTimeout(timeoutId); // Clear timeout if the request completed before 8 seconds
-      }
-
       const storage = rememberMe ? localStorage : sessionStorage;
       storage.setItem('token', res.data.token);
 
       toast.success('Login successful', { autoClose: 2000 });
       navigate('/dashboard');
     } catch (err) {
-      if (timeoutReached) {
-        clearTimeout(timeoutId); // Clear timeout if the request completed before 8 seconds
-      }
-
       const msg = err.response?.data?.message || 'Login failed';
       setError(msg);
       toast.error(msg, { autoClose: 3000 });
