@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -23,19 +24,19 @@ const Dashboard = () => {
       }
 
       try {
-        const userRes = await axios.get('http://localhost:5000/api/auth/me', {
+        const userRes = await axios.get(`${apiUrl}/api/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(userRes.data.user);
 
-        const projectRes = await axios.get('http://localhost:5000/api/projects', {
+        const projectRes = await axios.get(`${apiUrl}/api/projects`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProjects(projectRes.data);
 
         const tasksData = {};
         for (const project of projectRes.data) {
-          const taskRes = await axios.get(`http://localhost:5000/api/tasks/${project._id}`, {
+          const taskRes = await axios.get(`${apiUrl}/api/tasks/${project._id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           tasksData[project._id] = taskRes.data;
@@ -58,7 +59,7 @@ const Dashboard = () => {
 
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     try {
-      const res = await axios.post('http://localhost:5000/api/projects', newProject, {
+      const res = await axios.post(`${apiUrl}/api/projects`, newProject, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProjects([...projects, res.data]);
@@ -99,7 +100,7 @@ const Dashboard = () => {
             <button
               onClick={async () => {
                 try {
-                  await axios.delete(`http://localhost:5000/api/projects/${projectId}`, {
+                  await axios.delete(`${apiUrl}/api/projects/${projectId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                   });
                   setProjects((prev) => prev.filter((p) => p._id !== projectId));

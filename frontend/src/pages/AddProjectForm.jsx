@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Sidebar from '../components/dashboard/Sidebar';
 import Navbar from '../components/dashboard/Navbar';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -23,19 +24,19 @@ const Dashboard = () => {
       }
 
       try {
-        const userRes = await axios.get('http://localhost:5000/api/auth/me', {
+        const userRes = await axios.get(`${apiUrl}/api/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(userRes.data.user);
 
-        const projectRes = await axios.get('http://localhost:5000/api/projects', {
+        const projectRes = await axios.get(`${apiUrl}/api/projects`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProjects(projectRes.data);
 
         // Fetch tasks for each project
         const taskPromises = projectRes.data.map(project =>
-          axios.get(`http://localhost:5000/api/tasks/${project._id}`, {
+          axios.get(`${apiUrl}/api/tasks/${project._id}`, {
             headers: { Authorization: `Bearer ${token}` },
           })
         );
@@ -63,7 +64,7 @@ const Dashboard = () => {
 
     try {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-      const res = await axios.post('http://localhost:5000/api/tasks', {
+      const res = await axios.post(`${apiUrl}/api/tasks`, {
         ...newTask,
         projectId,
       }, {
@@ -86,7 +87,7 @@ const Dashboard = () => {
   const handleDeleteTask = async (taskId, projectId) => {
     try {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/tasks/${taskId}`, {
+      await axios.delete(`${apiUrl}/api/tasks/${taskId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

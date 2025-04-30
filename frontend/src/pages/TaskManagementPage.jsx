@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import dayjs from 'dayjs';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const TaskManagementPage = () => {
   const { projectId } = useParams();
@@ -22,13 +23,13 @@ const TaskManagementPage = () => {
 
       try {
         // Fetch Project Title
-        const projectRes = await axios.get(`http://localhost:5000/api/projects/${projectId}`, {
+        const projectRes = await axios.get(`${apiUrl}/api/projects/${projectId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProjectTitle(projectRes.data.title);
 
         // Fetch Tasks
-        const taskRes = await axios.get(`http://localhost:5000/api/tasks/${projectId}`, {
+        const taskRes = await axios.get(`${apiUrl}/api/tasks/${projectId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setTasks(taskRes.data);
@@ -49,7 +50,7 @@ const TaskManagementPage = () => {
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/api/tasks', {
+      const res = await axios.post(`${apiUrl}/api/tasks`, {
         ...newTask,
         projectId,
       }, {
@@ -67,7 +68,7 @@ const TaskManagementPage = () => {
 
   const handleDeleteTask = async (taskId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/tasks/${taskId}`, {
+      await axios.delete(`${apiUrl}/api/tasks/${taskId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTasks(tasks.filter(task => task._id !== taskId));
@@ -80,7 +81,7 @@ const TaskManagementPage = () => {
 
   const handleUpdateTaskStatus = async (taskId, status) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/tasks/${taskId}`, {
+      const res = await axios.put(`${apiUrl}/api/tasks/${taskId}`, {
         status,
       }, {
         headers: { Authorization: `Bearer ${token}` },

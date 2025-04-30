@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import countries from '../data/countries';
 import { toast } from 'react-toastify';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -58,7 +59,7 @@ const Signup = () => {
     if (!validateForm()) return;
 
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/signup', form);
+      const res = await axios.post(`${apiUrl}/api/auth/signup`, form);
       localStorage.setItem('token', res.data.token);
       toast.success("Signup successful!");
       navigate('/dashboard');
