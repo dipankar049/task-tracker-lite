@@ -11,6 +11,8 @@ const Login = () => {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -22,6 +24,14 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
+    let timeoutReached = false;
+
+    // Set a timeout to show a message if the server takes too long (8 seconds in this case)
+    const timeoutId = setTimeout(() => {
+      timeoutReached = true;
+      toast.info('Server is waking up. Please wait up to 1 minute...', { autoClose: 5000 });
+    }, 8000);  // Change timeout to 8000ms (8 seconds)
 
     try {
       const res = await axios.post(`${apiUrl}/api/auth/login`, {
@@ -29,17 +39,28 @@ const Login = () => {
         rememberMe,
       });
 
+      if (timeoutReached) {
+        clearTimeout(timeoutId); // Clear timeout if the request completed before 8 seconds
+      }
+
       const storage = rememberMe ? localStorage : sessionStorage;
       storage.setItem('token', res.data.token);
 
       toast.success('Login successful', { autoClose: 2000 });
       navigate('/dashboard');
     } catch (err) {
+      if (timeoutReached) {
+        clearTimeout(timeoutId); // Clear timeout if the request completed before 8 seconds
+      }
+
       const msg = err.response?.data?.message || 'Login failed';
       setError(msg);
       toast.error(msg, { autoClose: 3000 });
+    } finally {
+      setLoading(false);
     }
-  };
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100 px-8">
@@ -97,9 +118,17 @@ const Login = () => {
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200 cursor-pointer"
+            disabled={loading}
           >
-            Login
+            {loading ? 'Logging in...' : 'Login'}
           </button>
+
+          {/* 🔽 Add this loading message block here */}
+          {loading && (
+            <div className="text-center text-sm text-gray-600 mt-2 animate-pulse">
+              Please wait... waking up the server.
+            </div>
+          )}
         </form>
 
         <p className="text-center text-sm text-gray-600 mt-6">

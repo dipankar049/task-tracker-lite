@@ -17,6 +17,7 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -58,21 +59,43 @@ const Signup = () => {
     e.preventDefault();
     if (!validateForm()) return;
 
+    setLoading(true);
+    setError(''); // Clear previous error message
+
+    let timeoutReached = false;
+
+    // Start a timeout that will show the message after 5 seconds if not completed
+    const timeoutId = setTimeout(() => {
+      timeoutReached = true;
+      toast.info('Server is waking up. Please wait up to 1 minute...', { autoClose: 5000 });
+    }, 8000);
+
     try {
       const res = await axios.post(`${apiUrl}/api/auth/signup`, form);
+      if (timeoutReached) {
+        clearTimeout(timeoutId); // Clear timeout if request is completed before 5 seconds
+      }
       localStorage.setItem('token', res.data.token);
       toast.success("Signup successful!");
       navigate('/dashboard');
     } catch (err) {
+      if (timeoutReached) {
+        clearTimeout(timeoutId); // Clear timeout if request is completed before 5 seconds
+      }
       toast.error(err.response?.data?.message || 'Signup failed');
+    } finally {
+      setLoading(false); // End loading state
     }
-  };
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="bg-white shadow-lg rounded-lg px-8 pt-10 pb-8 w-full max-w-md">
         <h1 className="text-3xl font-bold text-center text-blue-600 mb-2">Welcome!</h1>
         <p className="text-center text-gray-600 mb-6">Create your account to get started</p>
+
+        {error && <div className="text-red-500 text-sm mb-4 text-center">{error}</div>} {/* Error message */}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
@@ -149,9 +172,17 @@ const Signup = () => {
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-3 rounded-md font-semibold hover:bg-blue-700 transition duration-200"
+            disabled={loading}
           >
-            Sign Up
+            {loading ? 'Signing Up...' : 'Sign Up'}
           </button>
+
+          {/* Loading message */}
+          {loading && (
+            <div className="text-center text-sm text-gray-600 mt-2 animate-pulse">
+              Please wait... signing you up.
+            </div>
+          )}
         </form>
 
         <p className="text-sm text-center mt-4 text-gray-600">
