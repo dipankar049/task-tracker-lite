@@ -10,10 +10,11 @@ const app = express();
 // Middlewares
 dotenv.config();
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: 'https://task-tracker-lite-a0gln93ic-dipankars-projects-a62edbeb.vercel.app',
     methods: 'GET,POST,PUT,DELETE',
     credentials: true,
-}));  
+}));
+ 
 app.use(express.json());
 
 // Routes
