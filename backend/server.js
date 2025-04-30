@@ -8,12 +8,23 @@ const cors = require('cors');
 const app = express();
 
 // Middlewares
-dotenv.config();
-app.use(cors({
-    origin: 'https://task-tracker-lite-a0gln93ic-dipankars-projects-a62edbeb.vercel.app',
-    methods: 'GET,POST,PUT,DELETE',
+const allowedOrigins = [
+    'https://task-tracker-lite.vercel.app',
+    'https://task-tracker-lite-git-main-dipankars-projects-a62edbeb.vercel.app',
+    'https://task-tracker-lite-6vnaaexa0-dipankars-projects-a62edbeb.vercel.app'
+  ];
+  
+  app.use(cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('CORS not allowed for this origin'));
+      }
+    },
     credentials: true,
-}));
+  }));
+
  
 app.use(express.json());
 
