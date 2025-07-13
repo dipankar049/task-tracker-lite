@@ -12,6 +12,10 @@ A task tracker application that allows users to manage and track the progress of
 - **Responsive Design**: The frontend is designed to be responsive for different screen sizes.
 - **Security Features**: Token storage options (localStorage or cookies) with a shorter token expiration time and "Remember Me" functionality.
 
+## Live Demo
+
+🔗 [Click here to try the DSA Simulator](https://task-tracker-lite.vercel.app/)
+
 ## Tech Stack
 
 - **Frontend**: ReactJS, TailwindCSS
