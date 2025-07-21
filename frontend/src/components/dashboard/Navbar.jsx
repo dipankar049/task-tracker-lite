@@ -1,4 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { LogIn, UserPlus, LogOut, User } from "lucide-react";
+
 
 const Navbar = () => {
   const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -7,8 +9,13 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     sessionStorage.removeItem('token');
-    navigate('/login');
+    navigate('/');
   };
+
+  const handleNavigateDashboard = () => {
+    if(window.location.pathname === '/dashboard') return;
+    navigate('/dashboard');
+  }
 
   return (
     <nav className="bg-gray-900 text-white px-6 py-4 shadow-md flex justify-between items-center">
@@ -18,24 +25,30 @@ const Navbar = () => {
       <div className="space-x-4 flex items-center">
         {!token ? (
           <>
-            <Link to="/login" className="text-white hover:text-blue-400 transition duration-200 font-medium">
+            <Link to="/login" className="hidden sm:block text-white hover:text-blue-400 transition duration-200 font-medium">
               Login
             </Link>
-            <Link to="/signup" className="text-white hover:text-blue-400 transition duration-200 font-medium">
+            <Link to="/login"><LogIn className="sm:hidden w-6 h-6 text-blue-500 cursor-pointer"/></Link>
+            <Link to="/signup" className="hidden sm:block text-white hover:text-blue-400 transition duration-200 font-medium">
               Signup
             </Link>
+            <Link to="/signup"><UserPlus className="sm:hidden w-6 h-6 text-green-500 cursor-pointer" /></Link>
           </>
         ) : (
           <>
-            <Link to="/dashboard" className="text-white hover:text-blue-400 transition duration-200 font-medium">
+            <button onClick={handleNavigateDashboard} className="hidden sm:block text-white hover:text-blue-400 transition duration-200 font-medium">
               Dashboard
-            </Link>
+            </button>
+            <button onClick={handleNavigateDashboard}>
+              <User className="sm:hidden w-6 h-6 text-gray-400 cursor-pointer" />
+            </button>
             <button
               onClick={handleLogout}
-              className="bg-red-600 hover:bg-red-700 text-white font-semibold py-1.5 px-4 rounded-md transition duration-200"
+              className="hidden sm:block bg-red-600 hover:bg-red-700 text-white font-semibold py-1.5 px-4 rounded-md transition duration-200"
             >
               Logout
             </button>
+            <button onClick={handleLogout}><LogOut className="sm:hidden w-6 h-6 text-red-500 cursor-pointer" /></button>
           </>
         )}
       </div>

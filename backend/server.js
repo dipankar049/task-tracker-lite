@@ -1,5 +1,5 @@
 const express = require('express');
-const dotenv = require('dotenv');
+require('dotenv').config();
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
 const projectRoutes = require('./routes/projectRoutes');
@@ -11,7 +11,8 @@ const app = express();
 const allowedOrigins = [
     'https://task-tracker-lite.vercel.app',
     'https://task-tracker-lite-git-main-dipankars-projects-a62edbeb.vercel.app',
-    'https://task-tracker-lite-6vnaaexa0-dipankars-projects-a62edbeb.vercel.app'
+    'https://task-tracker-lite-6vnaaexa0-dipankars-projects-a62edbeb.vercel.app',
+    'http://localhost:3000'
   ];
   
   app.use(cors({

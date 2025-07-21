@@ -38,7 +38,7 @@ const Login = () => {
       storage.setItem('token', res.data.token);
 
       toast.success('Login successful', { autoClose: 2000 });
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       const msg = err.response?.data?.message || 'Login failed';
       setError(msg);

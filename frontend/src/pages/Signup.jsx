@@ -68,7 +68,7 @@ const Signup = () => {
       const res = await axios.post(`${apiUrl}/api/auth/signup`, form);
       localStorage.setItem('token', res.data.token);
       toast.success("Signup successful!");
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       toast.error(err.response?.data?.message || 'Signup failed');
     } finally {
